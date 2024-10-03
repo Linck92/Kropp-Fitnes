@@ -1,0 +1,1041 @@
+@font-face {
+    font-family: 'Heebo';
+    src:url(fonts/Heebo-Light.woff2) format('woff2');
+font-weight: 300;
+font-style: normal;
+font-display: swap;
+}
+
+@font-face {
+    font-family: 'Heebo';
+    src:url(fonts/Heebo-Bold.woff2) format('woff2');
+font-weight: 700;
+font-style: normal;
+font-display: swap;
+}
+
+@font-face {
+    font-family: 'Yantramanav';
+    src:url(fonts/Yantramanav-Bold.woff2) format('woff2');
+font-weight: 700;
+font-style: normal;
+font-display: swap;
+}
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:where(ol, ul):where([class]) {
+    padding-left: 0;
+}
+
+body,
+:where(blockquote, figure):where([class]) {
+    margin: 0;
+}
+
+:where(h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    ul,
+    ol,
+    dl):where([class]) {
+    margin-block: 0;
+}
+
+:where(dd[class]) {
+    margin-left: 0;
+}
+
+:where(ul[class]) {
+    list-style: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+    font: inherit;
+}
+
+html {
+    height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100%;
+    line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+:root {
+    --color-dark: #000000;
+    --color-dark-alternate: #131619;
+    --color-light: #FFFFFF;
+    --color-dark-grey: #404040;
+    --color-light-cgrey: #C4C4C4;
+
+    --border-radius: 30px;
+    --border: 1px solid var(--color-light);
+
+    --font-family-base: 'Heebo', sans-serif;
+    --font-family-accent: 'Yantramanav', sans-serif;
+
+    --input-height: 54px;
+
+    --container-width: 1300px;
+    --container-padding-x: 15px;
+
+    --transition-duration: 0.2s;
+
+    --header-height: 90px;
+}
+
+body {
+    background-color: var(--color-dark);
+    font-family: var(--font-family-base);
+    color: var(--color-light-cgrey);
+    font-size: 16px;
+    line-height: 1.75;
+}
+svg *[fill] { fill:currentColor} /*работает как background-color но для SVG. Если вдруг иконка не перекрашивается значит у нее отвутствует свойство fill и его нужно добавить в path*/ 
+svg *[stroke] { stroke:currentColor} /*работает как border-color но для SVG*/
+
+a {
+    color: var(--color-light);
+}
+a:hover {
+    color: var(--color-light-cgrey);
+}
+p {
+    margin-block: 0;
+}
+p:not([class]):not(:last-child) {
+    margin-bottom: 24px;
+}
+a,
+button,
+input,
+textarea,
+svg * {
+    transition-duration: var(--transition-duration);
+}
+svg * {
+    transition-property: fill, stroke; /*ИСправляем баг задержеи закрашивания при наведении*/
+}
+.container {
+    max-width: calc(var(--container-width) + var(--container-padding-x)*2);
+    margin-inline: auto; /*чтобы отцентровать*/
+    padding-inline: var(--container-padding-x);
+}
+.container-wide {
+    max-width: 1920px;
+    margin-inline: auto;
+}
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    border: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    clip-path: inset(100%) !important;
+    clip: rect(0 0 0 0) !important;
+    overflow: hidden !important;
+  }
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-light);
+}
+
+.title-medium {
+    font-size: clamp(20px, 2.02vw, 40px);
+    line-height: 1.3;
+    color: var(--color-light);
+}
+.title-big {
+    font-size: clamp(24px, 3.12vw, 60px);
+}
+
+.section-descriprion {
+    font-size: 20px;
+    line-height: 1.65;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-light);
+}
+.backdrop-title {
+    position: relative;
+    z-index: 2;
+}
+/* Делаем плюсик в начале надписи */
+.backdrop-title::before {
+    content: '';
+    display: block;
+    position: absolute;
+    right: calc(100% + 8px); /*Просто left: -8px не сработает как надо */
+    width: 26px;
+    aspect-ratio: 1;
+    background: url(icons/plus.svg) center/contain no-repeat ;
+}
+/* Делаем Strong на заднем фоне*/
+.backdrop-title::after {
+    content: attr(data-title); /* attr() ссылается на атрибут, у нас это слово Strong */
+    position: absolute;
+    top: -0.3em;
+    left: -0.6em;
+    z-index: -1;
+    font-size: 2.8em; /*font-size надиси Strong 112px, а его родителя backdrop-title 40, и если 112 поделить на 40 мы получим единицы em */
+    font-family: var(--font-family-accent);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--color-dark-grey);
+    /* text-stroke: 1px var(--color-dark-grey); */
+}
+.backdrop-title.centered::after {
+    left: 50%;
+    translate: -50% 0;
+    top: -0.25em;
+}
+.button {
+    display: inline-flex;
+    align-items: center;
+    height: 38px;
+    padding-inline: 26px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 2;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: var(--color-light);
+    border: none;
+    border-radius: var(--border-radius);
+    
+}
+.button:hover {
+    background-color: var(--color-light-cgrey);
+}
+
+.button.transparent {
+    position: relative;
+    height: var(--input-height); /*Потому что по макету высота этой кнопки 54 а такая высота у нас в переменной*/ 
+    padding-left: 31px;
+    padding-right: 80px;
+    color: var(--color-light);
+    background-color: transparent;
+    border: var(--border);
+}
+.button.transparent::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    height: 100%;
+    aspect-ratio: 1;
+    background: url(icons/button-arrow.svg) center/60% no-repeat;
+    border-radius: var(--border-radius);
+    border: var(--border);
+}
+.button.transparent:hover {
+    color: var(--color-dark);
+    background-color: var(--color-light-cgrey);
+}
+.input {
+    height: var(--input-height);
+    padding-inline: 25px;
+    width: 100%;
+    color: var(--color-light);
+    background-color: transparent;
+    border: 1px solid var(--color-light-cgrey);
+    border-radius: var(--border-radius);
+}
+.input::placeholder,
+select:invalid {
+    color: var(--color-light-cgrey);
+}
+
+.input:hover {
+    border-color: var(--color-light);
+}
+.input:focus {
+    color: var(--color-dark);
+    background-color: var(--color-light-cgrey);
+    outline: none; /* Убираем синую рамку при фокусировке*/
+}
+
+/* Убираем стрелки у полей ввода с типом number*/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox
+input[type=number] {
+  -moz-appearance: textfield;
+} */
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: 20px;
+    min-height: var(--header-height);
+    padding-inline: 32px;
+    background-color: var(--color-dark-alternate);
+}
+.header-logo {
+    flex-shrink: 0;
+}
+.header-menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 50px;
+}
+.header-menu-link {
+    display: inline-flex;
+    align-items: center;
+    height: var(--header-height);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+}
+.header-menu-link.is-current::after {
+    content: "";
+    width: 5px;
+    height: 5px; 
+    /*aspect-ratio: 1  или 1/2 и тд можно использовать вместо ширины или высоты и оно выставит ширину или высоту в указанной пропорции*/
+    background-color: currentColor; /*currentColor - потому что мы для всех ссылок задали изначально белый цвет*/
+    border-radius: 50%;
+    margin-left: 7px;
+}
+.header-actions {
+    display: flex;
+    column-gap: 40px;
+}
+.header-burger-button {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    row-gap: 4px;
+    padding-left: 8px;
+    justify-content: center;
+    width: 40px;
+    aspect-ratio: 1;  /*установит height в пропорции 1:1, если бы задали height то установилась бы ширина 1:1*/
+    border-radius: 50%;
+    background-color: transparent;
+    border: var(--border);
+    color: var(--color-light);
+}
+.header-burger-button-line {
+    position: relative;
+    height: 1px;
+    width: 6px;
+    background-color: currentColor;
+    box-shadow: 16px 0px 0px 0px currentColor;
+}
+.header-burger-button:hover {
+    color: var(--color-light-cgrey);
+    border-color: currentColor;
+}
+.banner {
+     /* Чтобы прижать к низу: */
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    padding-block: 36px;
+    padding-inline: 70px;
+    /* Аналогичная запись: 
+    padding: 36px 70px; */
+    min-height: calc(100vh - var(--header-height));
+    color: var(--color-light);
+    background-color: var(--color-dark-alternate);
+}
+.banner-body {
+    text-transform: uppercase;
+}
+.banner-info {
+    display: flex;
+    align-items: end;
+    /* если этого не сделать то мы не сможем поставить 
+    стрелку как пседвоэлемент ::before потому что он по
+    умолчанию строчный, а так как он является flex элементом
+    мы можем задать ему ширину и высоту и поставить background 
+    в виде svg стрелки */
+    font-size: clamp(16px, 1.52vw,30px);
+    line-height: 1.27; /*по макету 38px это font-size: 30px * 1,27 его мы и ставим;*/
+    font-weight: 700;
+}
+
+/* задем стрелку */
+.banner-info::before {
+    content: "";
+    width: clamp(60px, 10.1vw, 194px); /*Перевод из px в vw: px/общую ширину макета (у нас 1920) и умножаем на 100*/
+    aspect-ratio: 1; /*установит height в пропорции 1:1, если бы задали height то установилась бы ширина 1:1*/  
+    margin-right: 30px;
+    background: url(icons/bold-arrow-down-right.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain; /*заполнить все свободное прсотранство с осхранением пропорций*/
+/* Аналогичная запись:  
+background: url(icons/bold-arrow-down-right.svg) center/contain no-repeat; */
+}
+.banner-title {
+    font-size: min(18.75vw, 360px); /*Перевод из px в vw: px/общую ширину макета (у нас 1920) и умножаем на 100*/
+    line-height: 1; /*по макету 50px но тогда коэффициент 
+    получентся меньше 1 а это ошибка дизайна, 
+    поэтому савим 1*/
+}
+.banner-paggination-list {
+    display: flex;
+    justify-content: center;
+    column-gap: 14px;
+}
+/* элементам списка по умолчанию задается свойство 
+display: list-item
+font-size: 16
+line-height: 28
+чтобы привести их к размеру в соответствии с содержимым
+мы делаем следующее:*/
+.banner-paggination-item {
+    display: flex;
+}
+.baner-paggination-button {
+    display: inline-flex;
+    justify-content: center; /* Это ни на что не влияет */
+    align-items: center;/*Это ни на что не влияет*/
+    padding: 7px;
+    background-color: transparent;
+    border: none;
+}
+/* Задем кнопки через псевдоэлемент ::after
+(могли бы взять и ::before тут значения не имеет) 
+чтобы сохранить размер кнопок 10х10, а область взаимодействия
+увеличить через padding. Если бы делали просто в кнопке, 
+то размер кнопки увеличился бы. А тут мы создали ::after, 
+и отключили border: none и background-color: transparent 
+у самой кнопки и задали размеры и все остальное пседвоэлементу*/
+.baner-paggination-button::after {
+    content: "";
+    width: 10px;
+    aspect-ratio: 1;  /*установит height в пропорции 1:1, если бы задали height то установилась бы ширина 1:1*/
+    border: var(--border);
+    border-radius: 50%;
+    transition-duration: var(--transition-duration); 
+}
+.baner-paggination-button.is-current::after {
+    background-color: var(--color-light);
+}
+.baner-paggination-button:not(.is-current):hover::after {
+    border-color: var(--color-light-cgrey);
+}
+
+.motivation-item:nth-child(even) {
+background-color: var(--color-dark-alternate);
+}
+.motivation-item:nth-child(even) .motivation-card {
+flex-direction: row-reverse;
+}
+
+.motivation-card {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    column-gap: clamp(30px,10.42vw, 288px);
+}
+.motivation-card-image {
+    margin-block: -60px;
+}
+
+.motivation-card-body {
+    padding-left: 35px;
+}
+.motivation-card-title:not(:last-child) {
+    margin-bottom: 14px;
+}
+
+.motivation-card-description {
+    max-width: 400px;
+}
+.motivation-card-description:not(:last-child) {
+    margin-bottom: 37px;
+}
+
+.training-types {
+    position: relative;
+    /* max-width: 1920px;
+    margin-inline: auto; добавим эти значения через .container-wide*/
+    padding-top: 70px;
+    padding-bottom: 120px;
+    background-color: var(--color-dark);
+}
+.training-types-list {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 60px;
+}
+.training-types-item {
+    --trainingTypesItemIconSize: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 32px;
+    padding-top: var(--trainingTypesItemIconSize);
+    background: url(icons/arrow-for-types-of-training.svg) 100% 0/var(--trainingTypesItemIconSize) no-repeat; /*100% 0 - позиционирование (верхний правый угол), 80px размер изображение (это квадрат поэтому одно значение)*/
+}
+.training-types-item-title {
+    font-size: 16px;
+}
+.join-us {
+    background-color: var(--color-dark-alternate);
+}
+.join-us-video-wrapper {
+    position: relative; /*нужно чтобы спозиционировать кнопку со значение absolute*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url(img/join-us-background.jpg) center/cover no-repeat var(--color-dark-alternate); /*в конце задаем фон если картинка не загрузится*/
+    padding: 150px 30px;
+}
+.join-us-video {
+    width: 100%;
+    max-width: 960px;
+    height: auto;
+}
+.join-us-video-play-button {
+    /* Следущие свойства центруют элемент */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 200px;
+    aspect-ratio: 1;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-light);
+    border-radius: 50%;
+    border: var(--border);
+    background-color: transparent;
+}
+.join-us-video-play-button::after {
+    content: '';
+    width: 26px;
+    aspect-ratio: 1;
+    background: url(icons/button-arrow.svg) center/contain no-repeat;
+    transition-duration: var(--transition-duration);
+}
+.join-us-video-play-button:hover {
+    background-color: var(--color-light-cgrey);
+    color: var(--color-dark);
+}
+/* Перекрашиваем стрелку, единственный способ */
+.join-us-video-play-button:hover::after {
+    filter: invert(1);
+}
+.join-us-body {
+    padding-bottom: 150px;
+}
+
+.join-us-title {
+    position: relative; /*так как Join us заходит на другую секцию, без relative часть надписи скроется за фоном верхней секции*/
+    margin-top: -0.4em;
+    font-size: clamp(64px, 9.37vw, 180px);
+    line-height: 1;
+    text-align: center;
+}
+.join-us-title::after {
+    content: '';
+    display: inline-block;
+    width: 0.7em; /*em - единицы относительно текста, текст 180px, а ширина стрелки по макету 127, что бы перевести в em нужно 127/180*/
+    aspect-ratio: 1;
+    background: url(icons/bold-arrow-down-right.svg) center/contain no-repeat;
+    scale: 1 -1; /*отражает по вертикали, либо можно rotate: -90deg;*/
+    margin-left: 0.14em;
+}
+.join-us-title:not(:last-child) {
+    margin-bottom: 130px;
+}
+.join-us-form-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 7px;
+}
+.join-us-form-header:not(:last-child) {
+margin-bottom: 52px;
+}
+
+
+.join-us-form-body{
+ display: flex;
+ justify-content: center;
+ column-gap: 20px;   
+}
+.join-us-form-input {
+    max-width: 400px;
+    }
+.location {
+    display: grid;
+    grid-template-columns: 1fr 1fr ;
+}   
+.location-map-image {
+    height: auto;
+}
+.location-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 15px;
+    text-align: center;
+}
+.location-title:not(:last-child){          /*:not(:last-child) - это не обязательно просто автор так подстраховывается от нежелательных отступов последних элементов р и h*/
+margin-bottom: 14px;
+}
+.location-description {
+    max-width: 490px;
+}
+.location-description:not(:last-child) {
+    margin-bottom: 37px;
+}
+.family {
+    background-color: var(--color-dark-alternate);
+}
+.family-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 7px;
+    padding-top: 132px;
+    padding-bottom: 62px;
+    text-align: center;
+}
+.family-body {
+    display: flex;
+    justify-content: center;
+    column-gap: 26px;
+    scroll-snap-type: x mandatory; /*Придает поведение слайдера*/
+    overflow-x: scroll;  /*Дает возможность скроллится по горизонтали*/
+}
+/* А у дочерних элементов слайдера написать следующее */
+.family-image {
+    scroll-snap-align: start;
+}
+.calculate {
+    padding-block: 146px;
+    background-color: var(--color-dark-alternate);
+}
+.calculate-inner {
+    display: flex;
+    align-items: center;
+    column-gap: 36px;
+}
+.calculate-body {
+    flex-grow: 1; /*чтобы ширина стремилась к максимально-допустимому значению*/
+    max-width: 627px;
+}
+.calculate-title:not(:last-child) {
+    margin-bottom: 16px;
+}
+.calculate-description {
+    max-width: 385px;
+}
+.calculate-description:not(:last-child) {
+    margin-bottom: 30px;
+}
+.calculate-form-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 30px;
+}
+.calculate-form-body:not(:last-child) {
+    margin-bottom: 26px;
+}
+.calculate-input.wide {
+    grid-column: -1 / 1;
+}
+.calculate-table-wrapper {
+    position:relative; /*Чтобы нормальзо спозиционировать ::before*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 610px;
+    max-width: 100%;
+}
+.calculate-table-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: var(--color-dark);
+    border-radius: 50%;
+}
+.calculate-table {
+    position: relative; /* Но можно и так: z-index: 1;, чтобы ::before не перекрывал таблицу*/
+    border-collapse: collapse; /*Это свойство играет роль, когда для ячеек установлена рамка, тогда в месте стыка ячеек получится линия двойной толщины. Значение collapse заставляет браузер анализировать подобные места в таблице и убирать в ней двойные линии*/ 
+}
+.calculate-table :is(td, th) {
+    padding-right: 30px;
+}
+.calculate-table :is(td, th):not(:first-child) {
+    padding-left: 30px;
+}
+.calculate-table :is(td, th):not(:last-child) {
+    border-right: 1px solid var(--color-light-cgrey);
+}
+.calculate-table tbody td {
+    border-top: 1px solid var(--color-light-cgrey);
+}
+.calculate-table th {
+    padding-block: 20px;
+    text-align: left;
+    text-transform: uppercase;
+    color: var(--color-light);
+}
+.calculate-table tbody tr:last-child td:first-child {
+    position: relative;
+}
+.calculate-table tbody tr:last-child td:first-child::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: 1px;
+    background-color: var(--color-light-cgrey);
+}
+.calculate-table td {
+    padding-block: 14px;
+}
+.calculate-table tfoot {
+    color: var(--color-light);
+}
+.calculate-table tfoot td {
+    padding-top: 33px;
+    padding-bottom: 8px;
+}
+.footer {
+    --footerlogoWidth: 20.77%;
+}
+.footer-main {
+    padding-top: 140px;
+    padding-bottom: 160px;
+}
+.footer-header,
+.footer-body {
+    display: grid;
+    column-gap: 62px;
+}
+.footer-header {
+    grid-template-columns: var(--footerlogoWidth) auto; /*такие колонки сделаны потому что логотип и первый столбец под ним совпадали по ширине. Ширина логотипа 270, а ширина container 1300, так и получилось 20.77%*/
+}
+.footer-header:not(:last-child) {
+    margin-bottom: 60px;
+}
+.footer-logo-image {
+    height: auto;
+}
+.footer-description {
+    text-align: left;
+}
+.footer-body {
+    grid-template-columns: var(--footerlogoWidth) repeat(3, 1fr);
+}
+.footer-column-title {
+    font-size: clamp(18px 1.15vw 22px);
+}
+.footer-column-title:not(:last-child) {
+    margin-bottom: 15px;
+}
+.footer-schedule:not(:last-child) {
+    margin-bottom: 13px;
+    }
+.footer-address {
+    font-style: normal;
+}
+.footer-address:not(:last-child) {
+    margin-bottom: 35px;
+}
+.footer-column-title.has-arrow::after{
+    content: '';
+    display: inline-block;
+    width: 0.74em; /*em - единицы относительно текста, текст 22px, а ширина стрелки по макету 16.3, что бы перевести в em нужно 16.3/22*/
+    aspect-ratio: 1;
+    background: url(icons/bold-arrow-down-right.svg) center/contain no-repeat;
+    scale: -1 1; /*отражает по вертикали, либо можно rotate: -90deg;*/
+    margin-left: 0.5em;
+}
+.footer-subscribe {
+    position: relative;
+}
+.footer-subscribe:not(:last-child) {
+    margin-bottom: 50px;
+}
+.footer-subscribe-input {
+    padding-right: 70px; /*Чтобы длинное значение в поле ввода на залезало на кнопку*/
+}
+.footer-subscribe-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    aspect-ratio: 1;
+    background: url(icons/button-arrow.svg) center/70% no-repeat;
+    border-radius: 50%;
+    border: var(--border);
+}
+.footer-subscribe-button:hover {
+    background-color: var(--color-light-cgrey);
+}
+.footer-soc1als-list {
+    display: flex;
+    column-gap: 18px;
+}
+.footer-soc1als-link {
+    display: flex;
+    width: 23px;
+}
+.footer-extra {
+  padding-block: 15px;
+  background-color: var(--color-dark-alternate);
+}
+.footer-copyright {
+font-size: 14px;
+}
+
+
+
+
+
+@media(max-width: 1919px){
+    .motivation-card-image {
+        margin-block: -20px;
+    }
+}
+
+@media(max-width: 1280px) {
+    .training-types-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media(max-width: 1024px){
+.header {
+    flex-wrap: wrap;
+    padding-top: 20px;
+    }
+
+.header,
+.banner {
+    padding-inline: 15px;
+}
+
+.header-menu {
+    order: 1;
+    flex-basis: 100%;
+}
+.header-menu-link {
+    height: 50px;
+}
+.banner {
+    row-gap: 10px;
+}
+.motivation-card {
+    padding-block: 50px;
+}
+
+.motivation-card-image {
+    max-width: 30%;
+    height: auto;
+    margin-block: 0; /*Обнуляем потму что из-за них выпирает остальной контент*/
+}
+.join-us-body {
+    padding-bottom: 80px;
+}
+.join-us-title:not(:last-child) {
+    margin-bottom: 80px;
+}
+.location {
+    display: flex;
+    flex-direction: column-reverse;
+}
+.family-image {
+    height: 360px;
+}
+.calculate-inner {
+    column-gap: 20px;
+}
+.calculate {
+    padding-block: 100px;
+}
+.calculate-form-body {
+    grid-template-columns: 1fr;
+}
+.calculate-button {
+    width: 100%;
+}
+.calculate-table :is(td, th){
+    padding-block: 10px;
+}
+.calculate-table tfoot td {
+    padding-top: 10px;
+}
+.footer-main {
+    padding-top: 80px;
+    padding-bottom: 50px;
+}
+.footer-header {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+}
+.footer-body {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 30px;
+}
+}
+
+
+@media(max-width: 767px) {
+    .header {
+        padding-top: 10px;
+    }
+    .header-menu-list {
+        column-gap: 25px;
+    }
+    .header-menu-link {
+        height: 32px;
+    }
+    .header-actions {
+        column-gap: 20px;
+    }
+    .button {
+        padding-inline: 18px;
+    }
+   
+    .banner-info {
+        margin-bottom: 5px;
+    }
+    .banner-info::before {
+        margin-right: 10px;
+    }
+    .motivation-card,
+    .motivation-item:nth-child(even) .motivation-card {
+        flex-direction: column-reverse;
+    }
+    /*.motivation-item:nth-child(even) .motivation-card {
+        flex-direction: column-reverse; - сделалано потому что для второй motivation-card 
+        мы задали через .motivation-item:nth-child(even) .motivation-card {
+        flex-direction: row-reverse; и просто чрез .motivation-card {
+        flex-direction: column-reverse; она в одну колонку не встает возможно
+    потому что селектор .motivation-item:nth-child(even) .motivation-card сильнее чем
+просто .motivation-card}
+    }*/
+    .motivation-card {
+        padding-block: 30px;
+        row-gap: 30px;
+    }
+    .motivation-card-image {
+        max-width: 60%;
+    }
+    .motivation-card-description:not(:last-child) {
+        margin-bottom: 20px;
+    }
+    .training-types-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+    .training-types-item {
+        --trainingTypesItemIconSize: 50px;
+        row-gap: 10px;
+    }
+    .training-types-image {
+        max-width: 120px;
+    }
+    .join-us-video-play-button {
+        width: 140px;
+    }
+    .join-us-title:not(:last-child) {
+        margin-bottom: 40px;
+    }
+    .section-descriprion {
+        font-size: 16px;
+    }
+    .join-us-form-body {
+        flex-direction: column;
+        align-items: center;
+        row-gap: 20px;
+    }
+    .location-body {
+        padding-block: 40px;
+    }
+    .location-description:not(:last-child) {
+        margin-bottom: 20px;
+    }
+    .family-image {
+        height: 180px;
+    }
+    .family-header {
+        padding-top: 80px;
+        padding-bottom: 50px;
+    }
+    .family-body {
+        column-gap: 12px;
+    }
+    .calculate {
+        padding-block: 60px;
+    }
+    .calculate-inner {
+        flex-direction: column;
+        row-gap: 30px;
+    }
+    .calculate-table-wrapper::before {
+        display: none;
+    }
+    .footer-main {
+        padding-top: 50px;
+    }
+    .footer-body {
+        grid-template-columns: 1fr;
+        row-gap: 15px;
+    }
+    .footer-header:not(:last-child) {
+        margin-bottom: 30px;
+    }
+    .footer-subscribe:not(:last-child) {
+        margin-bottom: 30px;
+    }
+}
